@@ -4,6 +4,8 @@ from django.db import models
 class Category(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=500, blank=True)
+    top_product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True,
+                                    related_name='+')
     
 
 class Discount(models.Model):
@@ -13,7 +15,8 @@ class Discount(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category,
-                                 on_delete=models.PROTECT)
+                                 on_delete=models.PROTECT,
+                                 related_name='products')
     slug = models.SlugField()
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
@@ -35,7 +38,8 @@ class Comment(models.Model):
         (COMMENT_STATUS_NOT_APPROVED, 'Not Approved'),
     ]
     
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,
+                                related_name='comments')
     name = models.CharField(max_length=255)
     body = models.TextField()
     datetime_created = models.DateTimeField(auto_now_add=True)
@@ -56,7 +60,7 @@ class Customer(models.Model):
     
 
    
-class Adress(models.Model):
+class Address(models.Model):
     customer = models.OneToOneField(Customer,
                                     on_delete=models.CASCADE,
                                     primary_key=True)
@@ -75,7 +79,8 @@ class Order(models.Model):
         (ORDER_STATUS_UNPAID, 'Unpaid'),
         (ORDER_STATUS_CANCELED, 'Canceled'),
     ]
-    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT,
+                                 related_name='orders')
     datetime_created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=1,
                               choices=ORDER_STATUS,
@@ -83,8 +88,10 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT,
+                              related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT,
+                                related_name='order_items')
     quantity = models.PositiveSmallIntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     
@@ -98,8 +105,10 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,
+                             related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,
+                                related_name='cart_items')
     quantity = models.PositiveSmallIntegerField()
     
     class Meta:
