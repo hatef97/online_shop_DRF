@@ -50,6 +50,7 @@ class CustomerFactory(DjangoModelFactory):
     birth_date = factory.LazyFunction(lambda: faker.date_time_ad(start_datetime=datetime(1990,1,1), end_datetime=datetime(2015,1,1)))
 
 
+
 class AddressFactory(DjangoModelFactory):
     class Meta:
         model = models.Address
