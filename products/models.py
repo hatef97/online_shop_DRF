@@ -12,6 +12,8 @@ class Discount(models.Model):
     discount = models.FloatField()
     description = models.CharField(max_length=255)
 
+
+
 class Product(models.Model):
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category,
