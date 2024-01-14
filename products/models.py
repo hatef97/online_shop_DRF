@@ -89,6 +89,9 @@ class Order(models.Model):
     status = models.CharField(max_length=1,
                               choices=ORDER_STATUS,
                               default=ORDER_STATUS_UNPAID)
+    
+    def __str__(self) -> str:
+        return f"Order id= {self.id}"
 
 
 class OrderItem(models.Model):
