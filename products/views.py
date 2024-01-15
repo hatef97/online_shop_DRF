@@ -6,7 +6,7 @@ from .models import Product, Order, OrderItem
 
 
 def show_data(requests):
-    queryset = Product.objects.prefetch_related('order_items').all()
+    queryset = Order.objects.select_related('customer').prefetch_related('items__product').all()
 
         
-    return render(requests, 'hello.html', {'products': list(queryset)})
+    return render(requests, 'hello.html', {'orders': list(queryset)})
