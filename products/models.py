@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.query import QuerySet
 
 
 class Category(models.Model):
@@ -27,7 +28,13 @@ class Product(models.Model):
     datetime_modified = models.DateTimeField(auto_now=True)
     discounts = models.ManyToManyField(Discount, blank=True)
     
+# class CommentManager(models.Manager):
+#     def get_approved(self):
+#         return self.get_queryset().filter(status=Comment.COMMENT_STATUS_APPROVED)
 
+class ApprovedCommentManager(models.Manager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(status=Comment.COMMENT_STATUS_APPROVED)
 
     
 class Comment(models.Model):
@@ -49,6 +56,8 @@ class Comment(models.Model):
                               choices=COMMENT_STATUS,
                               default=COMMENT_STATUS_WAITING)
     
+    objects = models.Manager()
+    approved = ApprovedCommentManager()
     
 
 
