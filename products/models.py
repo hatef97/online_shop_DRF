@@ -82,6 +82,17 @@ class Address(models.Model):
     street = models.CharField(max_length=255)
     
 
+# class OrderManager(models.Manager):
+#     def get_by_status(self, status):
+#         if status in [Order.ORDER_STATUS_PAID, Order.ORDER_STATUS_UNPAID, Order.ORDER_STATUS_CANCELED]:
+#             return self.get_queryset().filter(status=Order.ORDER_STATUS_UNPAID)
+#         return self.get_queryset()
+    
+
+class UnpaidOrderManager(models.Manager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(status=Order.ORDER_STATUS_UNPAID)
+    
 
 class Order(models.Model):
     ORDER_STATUS_PAID = 'p'
@@ -98,6 +109,9 @@ class Order(models.Model):
     status = models.CharField(max_length=1,
                               choices=ORDER_STATUS,
                               default=ORDER_STATUS_UNPAID)
+    
+    objects = models.Manager()
+    unpaid_manager = UnpaidOrderManager()
     
     def __str__(self) -> str:
         return f"Order id= {self.id}"

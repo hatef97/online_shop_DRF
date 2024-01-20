@@ -6,9 +6,9 @@ from .models import *
 
 
 def show_data(requests):
-    queryset = Comment.objects.all()
+    queryset = Order.unpaid_manager.all()
     
     print(queryset)
 
         
-    return render(requests, 'hello.html', {'orders': list(queryset)})
+    return render(requests, 'hello.html')
