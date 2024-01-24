@@ -6,9 +6,13 @@ from .models import *
 
 
 def show_data(requests):
-    queryset = Order.unpaid_manager.all()
+    category = Category(id=100)
+    category.title = 'cars'
+    category.description = 'New 2023 top cars'
+    category.save()
+    query = Category.objects.get(id=100)
     
-    print(queryset)
+    print(query)
 
         
     return render(requests, 'hello.html')
